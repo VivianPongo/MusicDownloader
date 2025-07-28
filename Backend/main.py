@@ -16,11 +16,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/download")
+@app.get("/")
 def root():
     return {"message": "🎵 Backend activo. Listo para descargar música."}
 
-@app.post("/")
+@app.post("/download")
 def download_audio(
     url: str = Form(...),
     formato: str = Form("mp3"),

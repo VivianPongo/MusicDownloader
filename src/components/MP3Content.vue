@@ -79,7 +79,7 @@ const startDownload = () => {
   formData.append('formato', formato.value)
   formData.append('calidad', calidad.value)
 
-  fetch('https://musicdownloader-je4i.onrender.com', {
+  fetch('https://musicdownloader-je4i.onrender.com/download', {
     method: 'POST',
     body: formData,
   })
