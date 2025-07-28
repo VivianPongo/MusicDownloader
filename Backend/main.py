@@ -10,17 +10,17 @@ app = FastAPI()
 # Configuración de CORS (permite comunicación con frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://musicdownloader-je4i.onrender.com/"],  # Cambia según frontend
+    allow_origins=["http://localhost:5173", "https://musicdownloader-je4i.onrender.com"],  # Cambia según frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/download")
 def root():
     return {"message": "🎵 Backend activo. Listo para descargar música."}
 
-@app.post("/download")
+@app.post("/")
 def download_audio(
     url: str = Form(...),
     formato: str = Form("mp3"),
