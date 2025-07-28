@@ -79,7 +79,7 @@ const startDownload = () => {
   formData.append('formato', formato.value)
   formData.append('calidad', calidad.value)
 
-  fetch('http://127.0.0.1:8000/download', {
+  fetch('https://musicdownloader-je4i.onrender.com/', {
     method: 'POST',
     body: formData,
   })
@@ -98,9 +98,9 @@ const startDownload = () => {
       a.style.display = 'none'
 
       // NO fuerces el nombre si el backend ya lo proporciona
-      //a.download = `descarga.${formato.value}` // <- QUITA ESTA LÍNEA
-      //document.body.appendChild(a)
-      //a.click()
+      a.download = `descarga.${formato.value}` // <- QUITA ESTA LÍNEA
+      document.body.appendChild(a)
+      a.click()
       a.remove()
       URL.revokeObjectURL(downloadUrl)
     })
