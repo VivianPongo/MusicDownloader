@@ -79,37 +79,54 @@ const startDownload = () => {
   formData.append('formato', formato.value)
   formData.append('calidad', calidad.value)
 
-  fetch('https://musicdownloader-je4i.onrender.com/download', {
+  // Agregado para debug
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
+  fetch('https://601314dd-e30d-42e3-9a5d-e67206b4fbeb-00-a7et60ztyy9p.picard.replit.dev:8080/download', {
     method: 'POST',
     body: formData,
   })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Hubo un error en la descarga.')
-      }
-      return response.blob()
-    })
-    .then(blob => {
-      const downloadUrl = URL.createObjectURL(blob)
+     .then(response => {
+  if (!response.ok) {
+    throw new Error('Hubo un error en la descarga.')
+  }
 
-      // Solo crea un <a> si es necesario descargar (no usar el nombre fijo "descarga")
-      const a = document.createElement('a')
-      a.href = downloadUrl
-      a.style.display = 'none'
+  // Leer filename del header (si está disponible)
+  const disposition = response.headers.get('Content-Disposition')
+  let filename = ' '
 
-      // NO fuerces el nombre si el backend ya lo proporciona
-      a.download = `descarga.${formato.value}` // <- QUITA ESTA LÍNEA
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(downloadUrl)
-    })
-    .catch(err => {
-      console.error('Error:', err)
-      alert('Ocurrió un error inesperado.')
-    })
+  if (disposition) {
+  const match = disposition.match(/filename\*=UTF-8''(.+)|filename="?([^\";]+)"?/)
+  if (match) {
+    filename = decodeURIComponent(match[1] || match[2])
+  }}
+  
+  else {
+    // Si no hay header (como ocurre en Replit), generar uno manual
+    const titleFromURL = url.value.split('v=')[1]?.substring(0, 8) || 'audio'
+    filename = `${titleFromURL}.${formato.value}`
+  }
+
+  return response.blob().then(blob => ({ blob, filename }))
+})
+.then(({ blob, filename }) => {
+  const downloadUrl = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = downloadUrl
+  a.style.display = 'none'
+  a.setAttribute('download', filename)  // Asegura el nombre de archivo
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(downloadUrl)
+})
+  
 }
 </script>
+
+
 
 <style scoped>
 .advanced-options {
